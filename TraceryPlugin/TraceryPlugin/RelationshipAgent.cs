@@ -10,11 +10,11 @@ namespace TraceryPlugin
     {
         private static int next_id_ = 0;
 
-        private int my_id_;
+        public int agentId { get; private set; }
 
         public RelationshipAgent()
         {
-            my_id_ = next_id_++;
+            agentId = next_id_++;
         }
     }
 }
