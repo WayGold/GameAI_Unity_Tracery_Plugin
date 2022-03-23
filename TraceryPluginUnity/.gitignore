@@ -58,3 +58,6 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# Custom Plugin dll
+[Aa]ssets/Plugins/*/TraceryPlugin.dll
+
