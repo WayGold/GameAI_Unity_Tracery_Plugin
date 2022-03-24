@@ -1,0 +1,1 @@
+Build your TraceryPlugin VS project then copy all the files from bin/(configuration)/netcoreapp3.1/ into the Assets/Plugins/TraceryPlugin folder
