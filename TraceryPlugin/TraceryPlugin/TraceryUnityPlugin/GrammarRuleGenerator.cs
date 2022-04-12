@@ -4,9 +4,9 @@ using System.Text;
 
 namespace TraceryPlugin
 {
-    class GrammarGenerator
+    class GrammarRuleGenerator
     {
-        public GrammarGenerator()
+        public GrammarRuleGenerator()
         {
             generation_list_ = new Dictionary<int, HashSet<string>>();
             random_ = new Random();
