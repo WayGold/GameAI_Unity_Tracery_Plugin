@@ -14,7 +14,7 @@ namespace TraceryPlugin
             grammarRules = new Dictionary<string, GrammarRuleGenerator>();
         }
 
-        void AddRule(string ruleName)
+        public void AddRule(string ruleName)
         {
             if(!grammarRules.ContainsKey(ruleName))
             { 
@@ -22,12 +22,12 @@ namespace TraceryPlugin
             }
         }
 
-        void RemoveRule(string ruleName)
+        public void RemoveRule(string ruleName)
         {
             grammarRules.Remove(ruleName);
         }
 
-        bool AddRuleItem(string ruleName, string item, int weight)
+        public bool AddRuleItem(string ruleName, string item, int weight)
         {
             if(grammarRules.ContainsKey(ruleName))
             {
@@ -37,7 +37,7 @@ namespace TraceryPlugin
             return false;
         }
 
-        void RemoveRuleItem(string ruleName, string item, int weight)
+        public void RemoveRuleItem(string ruleName, string item, int weight)
         {
             if(grammarRules.ContainsKey(ruleName))
             {
