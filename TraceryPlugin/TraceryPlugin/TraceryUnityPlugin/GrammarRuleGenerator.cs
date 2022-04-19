@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TraceryPlugin
 {
-    class GrammarRuleGenerator
+    public class GrammarRuleGenerator
     {
         public GrammarRuleGenerator()
         {

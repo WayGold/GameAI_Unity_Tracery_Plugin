@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TraceryPlugin;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class DialogueManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
- 
+
     }
 
     // This is the function that somehow processes a sentence thru Tracery

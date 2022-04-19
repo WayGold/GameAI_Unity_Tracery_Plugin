@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TraceryPlugin
 {
-    class RelationshipAgent
+    public class RelationshipAgent
     {
         private static int next_id_ = 0;
 
