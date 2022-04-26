@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 using TraceryPlugin;
 using UnityTracery;
 
@@ -114,19 +115,19 @@ public class DialogueManager : MonoBehaviour
         gm.AddRule("origin");
 
         
-        gm.AddRuleItem("comment_about_other_character", "#transition_sentence# #comment#", 1);
+        gm.AddRuleItem("comment_about_other_character", "#transition_sentence# #comment#", 0);
 
-        gm.AddRuleItem("adjective", "#positive_adj#", 1);
-        gm.AddRuleItem("adjective", "#negative_adj#", 1);
+        //gm.AddRuleItem("adjective", "#positive_adj#", 1);
+        gm.AddRuleItem("adjective", "#negative_adj#", -1);
 
-        gm.AddRuleItem("comment", "#negative_comment#", 1);
-        gm.AddRuleItem("comment", "#positive_comment#", 1);
+        gm.AddRuleItem("comment", "#negative_comment#", -1);
+        //gm.AddRuleItem("comment", "#positive_comment#", 1);
 
-        gm.AddRuleItem("origin", "#greeting#, #adjective# #noun#! #comment_about_other_character#", 1);
-
+        gm.AddRuleItem("origin", "#greeting#, #adjective# #noun#! #comment_about_other_character#", 0);
+        
         foreach (var str in positive_adjectives)
         {
-            if (gm.AddRuleItem("positive_adj", str, (int)Random.Range(1, 10)))
+            if (gm.AddRuleItem("positive_adj", str, Random.Range(1, 10)))
             {
                 Debug.Log("pos adjective rule added");
             }
@@ -134,7 +135,7 @@ public class DialogueManager : MonoBehaviour
 
         foreach (var str in negative_adjectives)
         {
-            if (gm.AddRuleItem("negative_adj", str, (int)Random.Range(1, 10)))
+            if (gm.AddRuleItem("negative_adj", str, Random.Range(-10, -1)))
             {
                 Debug.Log("neg adjective rule added");
             }
@@ -142,7 +143,7 @@ public class DialogueManager : MonoBehaviour
 
         foreach (var str in nouns)
         {
-            if (gm.AddRuleItem("noun", str, (int)Random.Range(1, 10)))
+            if (gm.AddRuleItem("noun", str, 0))
             {
                 Debug.Log("noun rule added");
             }
@@ -150,7 +151,7 @@ public class DialogueManager : MonoBehaviour
 
         foreach (var str in greetings)
         {
-            if (gm.AddRuleItem("greeting", str, (int)Random.Range(1, 10)))
+            if (gm.AddRuleItem("greeting", str, 0))
             {
                 Debug.Log("greeting rule added");
             }
@@ -158,7 +159,7 @@ public class DialogueManager : MonoBehaviour
 
         foreach (var str in negative_comments)
         {
-            if (gm.AddRuleItem("negative_comment", str, (int)Random.Range(1, 10)))
+            if (gm.AddRuleItem("negative_comment", str, Random.Range(-10, -1)))
             {
                 Debug.Log("negative comment rule added");
             }
@@ -166,7 +167,7 @@ public class DialogueManager : MonoBehaviour
 
         foreach (var str in positive_comments)
         {
-            if (gm.AddRuleItem("positive_comment", str, (int)Random.Range(1, 10)))
+            if (gm.AddRuleItem("positive_comment", str, Random.Range(1, 10)))
             {
                 Debug.Log("positive comment rule added");
             }
@@ -174,11 +175,12 @@ public class DialogueManager : MonoBehaviour
 
         foreach (var str in transition_sentences)
         {
-            if (gm.AddRuleItem("transition_sentence", str, (int)Random.Range(1, 10)))
+            if (gm.AddRuleItem("transition_sentence", str, 0))
             {
                 Debug.Log("trans sentence rule added");
             }
         }
+        
 
 
         // set up relationship agents
@@ -206,39 +208,37 @@ public class DialogueManager : MonoBehaviour
         // find out who was previously speaking
         if (char1.speaking)
         {
-            string relationship_grammar = gm.GetRelationshipGrammar(1, 3, 3);
+            string relationship_grammar = gm.GetRelationshipGrammar(1, 0, 3);
             tracery_grammar = new TraceryGrammar(relationship_grammar);
             char1.sentenceGUI.text = tracery_grammar.Generate();
 
-            
- 
         }
         else if (char2.speaking)
         {
-            string relationship_grammar = gm.GetRelationshipGrammar(1, 3, 3);
+            string relationship_grammar = gm.GetRelationshipGrammar(1, 0, 3);
             tracery_grammar = new TraceryGrammar(relationship_grammar);
             char2.sentenceGUI.text = tracery_grammar.Generate();
         }
 
 
-        string positive_adj = "[\"#positive_adj#\"]";
-        if (tracery_grammar.Grammar["adjective"].ToString() == positive_adj)
-        {
-            // positive sentences should appear more often
-            gm.AddRuleItem("adjective", "#positive_adj#", 1);
-            gm.AddRuleItem("comment", "#positive_comment#", 1);
-        }
-        else
-        {
-            // negative sentences should appear more often
-            gm.AddRuleItem("adjective", "#negative_adj#", 1);
-            gm.AddRuleItem("comment", "#negative_comment#", 1);
-        }
-
 
 
         ToggleSpeakingCharacter();
 
+    }
+
+    public void WriteSentencesToFile()
+    {
+        List<string> sentences = new List<string>();
+
+        for (int i = 0; i < 150; i++)
+        {
+            string relationship_grammar = gm.GetRelationshipGrammar(1, 0, 3);
+            tracery_grammar = new TraceryGrammar(relationship_grammar);
+            sentences.Add(tracery_grammar.Generate());
+        }
+
+        File.WriteAllLines("sentences_negative.txt", sentences);
     }
 
     void ToggleSpeakingCharacter()
