@@ -12,23 +12,44 @@ public class DialogueManager : MonoBehaviour
     private GrammarManager gm;
     private TraceryGrammar tracery_grammar;
 
-    readonly string[] adjectives =
+    private RelationshipTracker relationship_tracker;
+
+    readonly string[] positive_adjectives =
     {
-        "ugly ass",
         "beautiful",
         "awesome",
-        "disgusting"
+        "smart",
+        "brilliant",
+        "excellent",
+        "cool",
+        "outstanding",
+        "nice",
+        "lovely",
+        "cute"
+    };
+
+    readonly string[] negative_adjectives =
+    {
+        "ugly ass",
+        "disgusting",
+        "retarded",
+        "dumb",
+        "rude",
+        "smelly",
+        "selfish",
+        "disgraceful"
     };
 
     readonly string[] nouns =
     {
-        "animal",
         "fish",
         "chicken",
         "person",
         "elephant",
         "Coca cola",
-        "dog"
+        "dog",
+        "human-being",
+        "kitten"
     };
 
     readonly string[] greetings =
@@ -36,7 +57,40 @@ public class DialogueManager : MonoBehaviour
         "howdy",
         "what's up",
         "how's it going",
-        "Whasssup"
+        "Whasssup",
+        "Yoooo",
+        "How are you",
+        "It's been a while"
+    };
+
+    readonly string[] transition_sentences =
+    {
+        "Hey you know what? ",
+        "Yo listen up,",
+        "I'm sorry but ",
+        "Umm...Should I say this? ",
+        "Hey check this out, ",
+        "I really have to tell you this,"
+    };
+
+    readonly string[] positive_comments =
+    {
+        "I love you!",
+        "I can't take my eyes off you.",
+        "You're just a wonderful person.",
+        "Let's hang out sometime!",
+        "I look forward to see you in the future.",
+        "What do I do without you?"
+    };
+
+    readonly string[] negative_comments =
+    {
+        "Beat it and never show up again!",
+        "I hate you!",
+        "Screw you!",
+        "You're a terrible existence.",
+        "I can't be friends with you.",
+        "Can you just leave me alone?"
     };
 
     
@@ -48,17 +102,41 @@ public class DialogueManager : MonoBehaviour
     {
         gm = new GrammarManager();
         gm.AddRule("adjective");
+        gm.AddRule("positive_adj");
+        gm.AddRule("negative_adj");
         gm.AddRule("noun");
         gm.AddRule("greeting");
+        gm.AddRule("comment_about_other_character");
+        gm.AddRule("transition_sentence");
+        gm.AddRule("comment");
+        gm.AddRule("positive_comment");
+        gm.AddRule("negative_comment");
         gm.AddRule("origin");
 
-        gm.AddRuleItem("origin", "[#greeting##adjective##noun#]", 1);
         
-        foreach (var str in adjectives)
+        gm.AddRuleItem("comment_about_other_character", "#transition_sentence# #comment#", 1);
+
+        gm.AddRuleItem("adjective", "#positive_adj#", 1);
+        gm.AddRuleItem("adjective", "#negative_adj#", 1);
+
+        gm.AddRuleItem("comment", "#negative_comment#", 1);
+        gm.AddRuleItem("comment", "#positive_comment#", 1);
+
+        gm.AddRuleItem("origin", "#greeting#, #adjective# #noun#! #comment_about_other_character#", 1);
+
+        foreach (var str in positive_adjectives)
         {
-            if (gm.AddRuleItem("adjective", str, (int)Random.Range(1, 10)))
+            if (gm.AddRuleItem("positive_adj", str, (int)Random.Range(1, 10)))
             {
-                Debug.Log("adjective rule added");
+                Debug.Log("pos adjective rule added");
+            }
+        }
+
+        foreach (var str in negative_adjectives)
+        {
+            if (gm.AddRuleItem("negative_adj", str, (int)Random.Range(1, 10)))
+            {
+                Debug.Log("neg adjective rule added");
             }
         }
 
@@ -78,19 +156,37 @@ public class DialogueManager : MonoBehaviour
             }
         }
 
+        foreach (var str in negative_comments)
+        {
+            if (gm.AddRuleItem("negative_comment", str, (int)Random.Range(1, 10)))
+            {
+                Debug.Log("negative comment rule added");
+            }
+        }
 
-        string relationship_grammar = gm.GetRelationshipGrammar(1, 3, 3);
+        foreach (var str in positive_comments)
+        {
+            if (gm.AddRuleItem("positive_comment", str, (int)Random.Range(1, 10)))
+            {
+                Debug.Log("positive comment rule added");
+            }
+        }
 
-        Debug.Log(relationship_grammar);
+        foreach (var str in transition_sentences)
+        {
+            if (gm.AddRuleItem("transition_sentence", str, (int)Random.Range(1, 10)))
+            {
+                Debug.Log("trans sentence rule added");
+            }
+        }
 
 
-        tracery_grammar = new TraceryGrammar(relationship_grammar);
-        print(tracery_grammar.Grammar);
+        // set up relationship agents
+        //char1.relationship_agent = new RelationshipAgent();
+        //char2.relationship_agent = new RelationshipAgent();
 
-        string tracery_output = tracery_grammar.Generate();
-        
-        
-        Debug.Log(tracery_output);
+        //relationship_tracker = new RelationshipTracker();
+ 
     }
 
     // This is the function that somehow processes a sentence thru Tracery
@@ -106,26 +202,42 @@ public class DialogueManager : MonoBehaviour
     // and process the input sentence thru tracery
     public void OnConversationContinueButtonClick()
     {
-        string input;
 
-        // find out who was previously speaking, get that sentence as input to tracery
+        // find out who was previously speaking
         if (char1.speaking)
         {
-            input = char1.sentenceGUI.text;
-            string output = ProcessInputSentence(input);
-            char2.sentenceGUI.text = output;
+            string relationship_grammar = gm.GetRelationshipGrammar(1, 3, 3);
+            tracery_grammar = new TraceryGrammar(relationship_grammar);
+            char1.sentenceGUI.text = tracery_grammar.Generate();
+
             
+ 
         }
         else if (char2.speaking)
         {
-            input = char2.sentenceGUI.text;
-            string output = ProcessInputSentence(input);
-            char1.sentenceGUI.text = output;
+            string relationship_grammar = gm.GetRelationshipGrammar(1, 3, 3);
+            tracery_grammar = new TraceryGrammar(relationship_grammar);
+            char2.sentenceGUI.text = tracery_grammar.Generate();
         }
 
-        ToggleSpeakingCharacter();
 
-        
+        string positive_adj = "[\"#positive_adj#\"]";
+        if (tracery_grammar.Grammar["adjective"].ToString() == positive_adj)
+        {
+            // positive sentences should appear more often
+            gm.AddRuleItem("adjective", "#positive_adj#", 1);
+            gm.AddRuleItem("comment", "#positive_comment#", 1);
+        }
+        else
+        {
+            // negative sentences should appear more often
+            gm.AddRuleItem("adjective", "#negative_adj#", 1);
+            gm.AddRuleItem("comment", "#negative_comment#", 1);
+        }
+
+
+
+        ToggleSpeakingCharacter();
 
     }
 
