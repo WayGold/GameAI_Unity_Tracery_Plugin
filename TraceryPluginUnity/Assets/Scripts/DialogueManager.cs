@@ -227,18 +227,26 @@ public class DialogueManager : MonoBehaviour
 
     }
 
-    public void WriteSentencesToFile()
+    public async void WriteSentencesToFile()
     {
         List<string> sentences = new List<string>();
 
-        for (int i = 0; i < 150; i++)
+        for (int i = 0; i < 10; i++)
         {
             string relationship_grammar = gm.GetRelationshipGrammar(1, 0, 3);
             tracery_grammar = new TraceryGrammar(relationship_grammar);
-            sentences.Add(tracery_grammar.Generate());
+
+            using (StreamWriter w = File.AppendText("negative_sentences.txt"))
+            {
+                w.WriteLine(tracery_grammar.Generate());
+            }
+
+            tracery_grammar = null;
         }
 
-        File.WriteAllLines("sentences_negative.txt", sentences);
+       
+
+       
     }
 
     void ToggleSpeakingCharacter()
