@@ -26,7 +26,45 @@ public class DialogueManager : MonoBehaviour
         "outstanding",
         "nice",
         "lovely",
-        "cute"
+        "cute",
+        "accomplished",
+        "achievable",
+        "alive",
+        "amazing",
+        "ambitious",
+        "amused",
+        "applauded",
+        "approved",
+        "attractive",
+        "big",
+        "better",
+        "boosting",
+        "brave",
+        "breathtaking",
+        "calm",
+        "careful",
+        "celebrated",
+        "cheerful",
+        "clever",
+        "cherished",
+        "commited",
+        "comprehensive",
+        "creative",
+        "devoted",
+        "enlightening",
+        "entertaining",
+        "fabulous",
+        "facinating",
+        "faithful",
+        "fantastic",
+        "favorable",
+        "fit",
+        "fine",
+        "fresh",
+        "friendly",
+        "fulfilled",
+        "helpful",
+        "grateful"
     };
 
     readonly string[] negative_adjectives =
@@ -38,7 +76,50 @@ public class DialogueManager : MonoBehaviour
         "rude",
         "smelly",
         "selfish",
-        "disgraceful"
+        "disgraceful",
+        "abandoned",
+        "abducted",
+        "accused",
+        "allergic",
+        "annoying",
+        "apologising",
+        "arrested",
+        "ashamed",
+        "asshole",
+        "averted",
+        "awful",
+        "bamboozled",
+        "banned",
+        "bastard",
+        "bizarre",
+        "bitch",
+        "boring",
+        "boycotted",
+        "brainwashing",
+        "broke",
+        "bullshit",
+        "bullcrap",
+        "bullied",
+        "catastrophic",
+        "censored",
+        "chaotic",
+        "cheating",
+        "confusing",
+        "controversial",
+        "crappy",
+        "criminal",
+        "cruel",
+        "damn",
+        "dead",
+        "deceiving",
+        "denied",
+        "depressing",
+        "desperate",
+        "detained",
+        "devastating",
+        "dickhead",
+        "disappointed",
+        "dishonest"
     };
 
     readonly string[] nouns =
@@ -117,11 +198,11 @@ public class DialogueManager : MonoBehaviour
         
         gm.AddRuleItem("comment_about_other_character", "#transition_sentence# #comment#", 0);
 
-        //gm.AddRuleItem("adjective", "#positive_adj#", 1);
-        gm.AddRuleItem("adjective", "#negative_adj#", -1);
+        gm.AddRuleItem("adjective", "#positive_adj#", 1);
+        //gm.AddRuleItem("adjective", "#negative_adj#", -1);
 
-        gm.AddRuleItem("comment", "#negative_comment#", -1);
-        //gm.AddRuleItem("comment", "#positive_comment#", 1);
+        //gm.AddRuleItem("comment", "#negative_comment#", -1);
+        gm.AddRuleItem("comment", "#positive_comment#", 1);
 
         gm.AddRuleItem("origin", "#greeting#, #adjective# #noun#! #comment_about_other_character#", 0);
         
@@ -227,7 +308,7 @@ public class DialogueManager : MonoBehaviour
 
     }
 
-    public async void WriteSentencesToFile()
+    public void WriteSentencesToFile()
     {
         List<string> sentences = new List<string>();
 
@@ -236,12 +317,11 @@ public class DialogueManager : MonoBehaviour
             string relationship_grammar = gm.GetRelationshipGrammar(1, 0, 3);
             tracery_grammar = new TraceryGrammar(relationship_grammar);
 
-            using (StreamWriter w = File.AppendText("negative_sentences.txt"))
+            using (StreamWriter w = File.AppendText("sentences_positive.txt"))
             {
                 w.WriteLine(tracery_grammar.Generate());
             }
 
-            tracery_grammar = null;
         }
 
        
